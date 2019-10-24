@@ -59,14 +59,14 @@ app.get("/scrape", function (req, res) {
     var $ = cheerio.load(response.data);
     console.log("get Request from axios")
     // Now, we grab every h2 within an article tag, and do the following:
-    $("a.card").each(function (i, element) {
+    $("div.s_c").each(function (i, element) {
       // Save an empty result object
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
       result.title = $(this).children("h2.headline").text();
-      result.summary = $(this).children("Article").text();
-      result.link =  $(this).find("div.deck div").text();
+      result.summary = $(this).children("summary").text();
+      result.link =  $(this).find("a.card").text();
       console.log(result)
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
@@ -171,7 +171,7 @@ app.post("/notes/save/:id", function (req, res) {
             "notes": note
           }
         })
-        /////???EXEC VS THEN???
+        
         .then(function (err) {
 
           if (err) {
