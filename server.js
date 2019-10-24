@@ -52,22 +52,22 @@ app.get("/", function (req, res) {
 
 // A GET route for scraping the echoJS website
 app.get("/scrape", function (req, res) {
-
+  console.log("scrape route starting")
   // First, we grab the body of the html with axios
-  axios.get("https://www.bostonglobe.com").then(function (response) {
+  axios.get("https://www.bostonglobe.com/sports/?p1=BGHeader_MainNav").then(function (response) {
     // Then, we load that into cheerio and save it to $ for a shorthand selector
     var $ = cheerio.load(response.data);
-
+    console.log("get Request from axios")
     // Now, we grab every h2 within an article tag, and do the following:
-    $("article h2").each(function (i, element) {
+    $("a.card").each(function (i, element) {
       // Save an empty result object
       var result = {};
 
       // Add the text and href of every link, and save them as properties of the result object
-      result.title = $(this).children("article.h2").text();
-      result.summary = $(this).children("summary").text();
-      result.link = $(this).children("article.h2").attr("href");
-
+      result.title = $(this).children("h2.headline").text();
+      // result.summary = $(this).children("summary").text();
+      // result.link = $(this).children("article.h2").attr("href");
+      console.log(result)
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)
         .then(function (dbArticle) {
